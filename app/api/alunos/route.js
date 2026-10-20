@@ -2,8 +2,9 @@ import db from "../../db/banco";
 import { NextResponse } from "next/server";
 
 export async function GET(){
-    const alunos = db.prepare('SELECT * FROM alunos ORDER BY nome')
+    const alunos = db.prepare('SELECT * FROM alunos ORDER BY nome').all()
     return NextResponse.json(alunos)
+    
 }
 
 export async function POST(request){
@@ -35,24 +36,25 @@ export async function PUT(request) {
         `);
         sql.run(dados.nome, dados.idade, dados.serie, dados.ra, dados.id_aluno);
         return NextResponse.json({
-            message: "Aluno atualizado com sucesso!"
+            mensagem: "Aluno atualizado com sucesso!"
         });
-    } catch (error) {
-        console.error('Erro ao editar o aluno ', error);
-        return NextResponse.json({ message: "Erro ao editar o aluno." }, { status: 500 });
+    } catch (erro) {
+        console.error('Erro ao editar o aluno ', erro);
+        return NextResponse.json({ erro: "Erro ao editar o aluno." }, { status: 500 });
     };
 }
 
 export async function DELETE(request) {
     try {
         const dados = await request.json();
+        console.log(await dados.id_aluno)
         const sql = db.prepare(`DELETE FROM alunos WHERE id_aluno = ?`);
         sql.run(dados.id_aluno);
         return NextResponse.json({
-            message: "Aluno excluído com sucesso!"
+            mensagem: "Aluno excluído com sucesso!"
         });
     } catch (error) {
         console.error('Erro ao excluir o aluno ', error);
-        return NextResponse.json({ message: "Erro ao excluir o aluno." }, { status: 500 });
+        return NextResponse.json({ erro: "Erro ao excluir o aluno." }, { status: 500 });
     };
 }
